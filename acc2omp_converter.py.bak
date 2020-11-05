@@ -123,8 +123,8 @@ if __name__ == "__main__":
         line = parsedLine
 
         if debug:
-            print("extra spaces extracted below:")
-            print(line)
+            print "extra spaces extracted below:"
+            print line
 
         # Four cases to consider when parsing a line:
         # 1. Carriage return only
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         # First case is a line with only a CR
         if len(line) == 0:
             if debug:
-                print('Carriage return only')
+                print 'Carriage return only'
             entries.append(origLine)
             continue
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         # Second case is a line with only a whitespace
         if lenDirs == 0:
             if debug:
-                print('Blank line')
+                print 'Blank line'
             entries.append(origLine)
             continue
 
@@ -169,7 +169,7 @@ if __name__ == "__main__":
         if ((dirs[0].lower() != accDir) and
                 (dirs[0].lower() != accDirContinue)):
             if debug:
-                    print('No OpenACC directive on this line')
+                    print 'No OpenACC directive on this line'
             entries.append(origLine)
             continue
 
@@ -191,16 +191,16 @@ if __name__ == "__main__":
         accDirLowerCase = dirs[0].islower()
 
         if debug:
-            print("accDirUpperCase = ", accDirUpperCase)
-            print("accDirLowerCase = ", accDirLowerCase)
+            print "accDirUpperCase = ", accDirUpperCase
+            print "accDirLowerCase = ", accDirLowerCase
 
         # Booleans cannot be both True or both False
         assert (accDirFound != accDirContinueFound)
         assert (accDirUpperCase != accDirLowerCase)
 
         if debug:
-            print('OpenACC directive present. Translating.')
-            print(dirs)
+            print 'OpenACC directive present. Translating.'
+            print dirs
 
         # These are the cases we consider
         # 1. Directive pairs. These are pairs of directives that only have
@@ -275,27 +275,27 @@ if __name__ == "__main__":
 
             if lenDirwargs > 1: dirwargsFound = True  # Boolean unused for now
             if debug:
-                print('dirwargs = ', dirwargs)
-                print('dirwargs[0] = currentDir = ', currentDir)
-                print('lenDirswargs = ', lenDirwargs)
-                print('dualDir =', dualDir)
+                print 'dirwargs = ', dirwargs
+                print 'dirwargs[0] = currentDir = ', currentDir
+                print 'lenDirswargs = ', lenDirwargs
+                print 'dualDir =', dualDir
 
             # identify which case we are in, only one can be true at any time
             # Need the check on dualDir equal None, because it will not exist
             # on iteration = 1.
             if dualDir is not None:
                 if dualDir in dualDirDict:
-                    print('OpenACC Directive Dual with no argument found')
+                    print 'OpenACC Directive Dual with no argument found'
                     dualDirFound = True
                 if dualDir in dualDirwargsDict:
-                    print('OpenACC Directive Dual with argument found')
+                    print 'OpenACC Directive Dual with argument found'
                     dualDirwargsFound = True
 
             if currentDir in singleDirDict:
-                print('OpenACC Directive Single with no argument found')
+                print 'OpenACC Directive Single with no argument found'
                 singleDirFound = True
             if currentDir in singleDirwargsDict:
-                print('OpenACC Directive Single with argument found')
+                print 'OpenACC Directive Single with argument found'
                 singleDirwargsFound = True
 
             # Tests that only one is true with XOR, if not, skip this iteration
@@ -303,7 +303,7 @@ if __name__ == "__main__":
             if not (singleDirFound ^ singleDirwargsFound ^
                     dualDirFound ^ dualDirwargsFound):
                 if debug:
-                    print("Next Iteration will check for Dual Directives Found")
+                    print "Next Iteration will check for Dual Directives Found"
                 continue
             else:
                 assert(singleDirFound ^ singleDirwargsFound ^
@@ -316,17 +316,17 @@ if __name__ == "__main__":
             if singleDirFound:
                 totalDirsFound = totalDirsFound + 1
                 if debug:
-                    print('OpenACC Directive Single with no argument found')
+                    print 'OpenACC Directive Single with no argument found'
                 newDir = singleDirDict[currentDir]
                 if newDir == emptyString: continue
                 if accDirUpperCase: newDir = newDir.upper()
-                if debug: print(currentDir + transitionArrow + newDir)
+                if debug: print currentDir + transitionArrow + newDir
                 newLine = newLine + singleSpaceString + newDir
 
             # (single) directive with an arguement
             if (lenDirwargs > 1) and singleDirwargsFound:
                 totalDirsFound = totalDirsFound + 1
-                if debug: print('OpenACC Directive Single with argument found')
+                if debug: print 'OpenACC Directive Single with argument found'
                 newDir = singleDirwargsDict[currentDir]
                 if newDir == emptyString: continue
                 if accDirUpperCase: newDir = newDir.upper()
@@ -334,25 +334,25 @@ if __name__ == "__main__":
                 # for-loop handles the arguement component
                 for j in range(1, lenDirwargs):
                     newDir = dirwargs[j]
-                    if debug: print(currentDir + transitionArrow + newDir)
+                    if debug: print currentDir + transitionArrow + newDir
                     newLine = newLine + newDir
 
             # (pair) directive with no arguement
             if dualDirFound:
                 totalDirsFound = totalDirsFound + 2
                 if debug:
-                    print('OpenACC Directive Dual with no arguement found')
+                    print 'OpenACC Directive Dual with no arguement found'
                 newDir = dualDirDict[dualDir]
                 if newDir == emptyString: continue
                 if accDirUpperCase: newDir = newDir.upper()
                 if debug:
-                    print(dualDir + transitionArrow + newDir)
+                    print dualDir + transitionArrow + newDir
                 newLine = newLine + singleSpaceString + newDir
 
             # (pair) directive with an arguement
             if (lenDirwargs > 1) and dualDirwargsFound:
                 totalDirsFound = totalDirsFound + 2
-                if debug: print('OpenACC Directive Dual with an argument')
+                if debug: print 'OpenACC Directive Dual with an argument'
                 newDir = dualDirwargsDict[dualDir]
                 if newDir == emptyString: continue
                 if accDirUpperCase: newDir = newDir.upper()
@@ -360,7 +360,7 @@ if __name__ == "__main__":
                 # for-loop handles the arguement component
                 for j in range(1, lenDirwargs):
                     newDir = dirwargs[j]
-                    if debug: print(dualDir + transitionArrow + newDir)
+                    if debug: print dualDir + transitionArrow + newDir
                     newLine = newLine + newDir
 
             # reset booleans for next iteration
@@ -379,9 +379,9 @@ if __name__ == "__main__":
         # output original line containing OpenACC.
         if (totalDirsFound < (lenDirs - 1)):
             if debug:
-                print('lenDirs=', lenDirs)
-                print('totalDirsFound=', totalDirsFound)
-                print('OpenACC directive could not be translated.')
+                print 'lenDirs=', lenDirs
+                print 'totalDirsFound=', totalDirsFound
+                print 'OpenACC directive could not be translated.'
             newLine = origLine
         else:
             if keepOpenACC:  # append original line into the buffer
@@ -404,8 +404,8 @@ if __name__ == "__main__":
     copyfile(currentFilename, backupFilename)
 
     if debug:
-        print('Current Filename: ', currentFilename)
-        print('Backup Filename: ', backupFilename)
+        print 'Current Filename: ', currentFilename
+        print 'Backup Filename: ', backupFilename
 
     # Close the current open file
     lines.close()
